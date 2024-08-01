@@ -1,2 +1,2 @@
-"# Filterer" 
-"## Convolutional filters" 
+# Filterer
+## Adds a filter
