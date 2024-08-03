@@ -1,1 +1,2 @@
-# Grapher
+# Filterer
+## Adds a filter
