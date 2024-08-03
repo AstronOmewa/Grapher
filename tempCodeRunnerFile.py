@@ -1,3 +1,7 @@
-s=[([[1]+[0]*(n-1)])*(n-1)]
-kernel=[list(map(int,f.split()))]+flat(s)
-kernel=flatten(kernel)
+img=[Image.merge(
+#     "RGB",(img[0],zero_band,zero_band)
+# ),Image.merge(
+#     "RGB",(zero_band,img[1],zero_band)
+# ),Image.merge(
+#     "RGB",(zero_band,zero_band,img[2])
+# )]
