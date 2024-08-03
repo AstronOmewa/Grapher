@@ -1,4 +1,5 @@
 import numpy as np
+<<<<<<< HEAD:sirius.py
 from scipy.ndimage import convolve
 from PIL import Image, ImageFilter
 file = "image.png"
@@ -55,3 +56,8 @@ img=[Image.fromarray(c) for c in convolved]
 # )]
 img=Image.merge("RGB",(img[0],img[1],img[2]))
 img.show()
+=======
+from PIL import Image
+from scipy.ndimage import convolve
+img = "graph.jpg"
+>>>>>>> origin/writingRDME:main.py
