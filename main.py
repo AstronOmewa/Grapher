@@ -3,18 +3,25 @@ from scipy.ndimage import convolve
 from PIL import Image, ImageFilter
 file = "image.png"
 
+def convKers(arr_img,kers=[],muls=[]):
+    for ker in kers:
+        kerSum=sum(flat(ker))
+        if kerSum==0:
+            kerSum=1
+        arr_img=convolve(arr_img,np.multiply(ker,1/kerSum*muls[kers.index(ker)]))
+    return arr_img
+
 def flatten(arr2d):
     sum_=sum([x for i in arr2d for x in i])
     if sum_==0:
         sum_=1
     return [x/sum_ for i in arr2d for x in i]
+
 def flat(arr2d):
     return [x for i in arr2d for x in i]
-def flt(arr_img,kernel):
-    kerSum=sum(flat(kernel))
-    if kerSum==0:
-        kerSum=1
-    return convolve(arr_img,np.multiply(kernel,1/kerSum))
+
+def flt(arr_img,kernels,muls=[1]):
+    return convKers(arr_img,kernels,muls)
 
 
 with Image.open(file) as img:
@@ -23,31 +30,32 @@ with Image.open(file) as img:
 n=2
 f="1 "*n
 s=[([[1]+[0]*(n-1)])*(n-1)]
-kernel=[
-    [-1,2],
-    [1,-2]
+kernels=[
+    [
+        [1,0,0],
+        [0,0,0],
+        [0,0,-1]
+    ],
+    [[1]*10]*10
 ]
-kernel1=[
-    [1,-1],
-    [-1,1]
-]
-repeats=10
+muls=[1,1]
+repeats=1
 # kernel=[[1]*n]*n
-img=img.convert("L")
-ch=[im for im in img.split()]
-zero_band=ch[0].point(lambda _:0)
+gr=img.convert("L")
+# gr.show()
+ch=gr
+zero_band=ch.point(lambda _:0)
 
 # img=flt(gray,kernel)
 
-arr_img=[np.array(i) for i in ch]
+arr_img=np.array(ch)
 
-convolved=[flt(i,kernel) for i in arr_img]
-convolved=[flt(i,kernel1) for i in arr_img]
+convolved=flt(arr_img,kernels,muls)
 for i in range(0,repeats-1):
-    # convolved=[flt(c,kernel) for c in convolved]
-    convolved=[flt(i,kernel1) for i in arr_img]
+    convolved=flt(arr_img,kernels,muls)
 
-img=[Image.fromarray(c) for c in convolved] 
+mask=Image.fromarray(convolved)
+# mask.show()
 # img=[Image.merge(
 #     "RGB",(img[0],zero_band,zero_band)
 # ),Image.merge(
@@ -55,6 +63,9 @@ img=[Image.fromarray(c) for c in convolved]
 # ),Image.merge(
 #     "RGB",(zero_band,zero_band,img[2])
 # )]
-img[0].show()
+blank=img.point(lambda _:0)
+
+res=Image.composite(img,blank,mask)
+res.show()
 img=Image.merge("RGB",(img[0],img[1],img[2]))
 
