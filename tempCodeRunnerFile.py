@@ -1,3 +1,1 @@
-kerSum=sum(flat(ker))
-        if kerSum==0:
-            kerSum=1
+img.crop((bordersX,bordersY,(img.size)[0] - bordersX,(img.size)[1] - bordersY))
