@@ -5,10 +5,10 @@ file = "image.png"
 
 def convKers(arr_img,kers=[],muls=[]):
     for ker in kers:
-        kerSum=sum(flat(ker))
-        if kerSum==0:
-            kerSum=1
-        arr_img=convolve(arr_img,np.multiply(ker,1/kerSum*muls[kers.index(ker)]))
+        if not isinstance(ker,ImageFilter.Filter):
+            arr_img=convolve(arr_img,ker)
+        else:
+            arr_img=np.array(Image.fromarray(arr_img).filter(ker))
     return arr_img
 
 def flatten(arr2d):
@@ -30,14 +30,12 @@ with Image.open(file) as img:
 n=2
 f="1 "*n
 s=[([[1]+[0]*(n-1)])*(n-1)]
+
 kernels=[
-    [
-        [1,0,0],
-        [0,0,0],
-        [0,0,-1]
-    ],
-    [[1]*10]*10
+        [[1]+[0]*(n-1)]+[[0]*n]*(n-2)+[[0]*(n-1)+[-1]]
 ]
+bordersX,bordersY=len(kernels[0]),len(kernels[0][0])
+img=img.crop((bordersX,bordersY,(img.size)[0] - bordersX-1,(img.size)[1] - bordersY-1))
 muls=[1,1]
 repeats=1
 # kernel=[[1]*n]*n
@@ -55,7 +53,7 @@ for i in range(0,repeats-1):
     convolved=flt(arr_img,kernels,muls)
 
 mask=Image.fromarray(convolved)
-# mask.show()
+mask.show()
 # img=[Image.merge(
 #     "RGB",(img[0],zero_band,zero_band)
 # ),Image.merge(
@@ -64,7 +62,7 @@ mask=Image.fromarray(convolved)
 #     "RGB",(zero_band,zero_band,img[2])
 # )]
 blank=img.point(lambda _:0)
-
+res=img.filter(ImageFilter.GaussianBlur(50))
 res=Image.composite(img,blank,mask)
 res.show()
 img=Image.merge("RGB",(img[0],img[1],img[2]))
